@@ -1,639 +1,385 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settlement Verification - $15B Patent Damages</title>
-    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            background: #0f172a;
-            color: #e2e8f0;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            text-align: center;
-            padding: 40px 20px;
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border-radius: 10px;
-            margin-bottom: 30px;
-            border: 1px solid #334155;
-        }
-        
-        .header h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
-            color: #60a5fa;
-        }
-        
-        .amount {
-            font-size: 56px;
-            font-weight: bold;
-            color: #fbbf24;
-            margin: 20px 0;
-            text-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
-        }
-        
-        .subtitle {
-            font-size: 18px;
-            color: #94a3b8;
-        }
-        
-        .ref-number {
-            background: rgba(251, 191, 36, 0.1);
-            border: 1px solid #fbbf24;
-            padding: 10px 20px;
-            border-radius: 5px;
-            display: inline-block;
-            margin-top: 15px;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .patent-box {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 10px;
-            padding: 30px;
-            margin-bottom: 30px;
-        }
-        
-        .patent-box h2 {
-            color: #fbbf24;
-            font-size: 20px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #334155;
-            padding-bottom: 10px;
-        }
-        
-        .patent-row {
-            display: grid;
-            grid-template-columns: 150px 1fr;
-            gap: 15px;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-        
-        .patent-label {
-            color: #94a3b8;
-            font-weight: 600;
-        }
-        
-        .patent-value {
-            color: #e2e8f0;
-        }
-        
-        .info-box {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 10px;
-            padding: 30px;
-            margin-bottom: 30px;
-        }
-        
-        .info-box h2 {
-            color: #60a5fa;
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-        
-        .info-row {
-            display: grid;
-            grid-template-columns: 200px 1fr;
-            gap: 15px;
-            margin-bottom: 12px;
-            font-size: 13px;
-        }
-        
-        .info-label {
-            color: #94a3b8;
-        }
-        
-        .info-value {
-            color: #e2e8f0;
-            font-family: 'Courier New', monospace;
-            word-break: break-all;
-        }
-        
-        .verify-section {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 10px;
-            padding: 30px;
-            margin-bottom: 30px;
-        }
-        
-        .verify-button {
-            width: 100%;
-            padding: 20px;
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 30px;
-        }
-        
-        .verify-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
-        }
-        
-        .verify-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .step {
-            background: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 15px;
-        }
-        
-        .step.active {
-            border-color: #3b82f6;
-            background: rgba(59, 130, 246, 0.1);
-        }
-        
-        .step.success {
-            border-color: #10b981;
-            background: rgba(16, 185, 129, 0.1);
-        }
-        
-        .step.error {
-            border-color: #ef4444;
-            background: rgba(239, 68, 68, 0.1);
-        }
-        
-        .step-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .step-icon {
-            width: 24px;
-            height: 24px;
-            margin-right: 12px;
-            font-size: 18px;
-        }
-        
-        .step-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: #e2e8f0;
-        }
-        
-        .step-description {
-            color: #94a3b8;
-            font-size: 13px;
-            margin-left: 36px;
-            margin-bottom: 10px;
-        }
-        
-        .step-result {
-            background: #0f172a;
-            border-left: 3px solid #3b82f6;
-            padding: 15px;
-            margin: 15px 0 0 36px;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            line-height: 1.6;
-            color: #cbd5e1;
-            display: none;
-            border-radius: 4px;
-        }
-        
-        .step.success .step-result {
-            display: block;
-            border-left-color: #10b981;
-        }
-        
-        .footer {
-            text-align: center;
-            padding: 30px;
-            color: #64748b;
-            font-size: 13px;
-        }
-        
-        .footer a {
-            color: #60a5fa;
-            text-decoration: none;
-        }
-        
-        .footer a:hover {
-            text-decoration: underline;
-        }
-        
-        .actions {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-        }
-        
-        .action-btn {
-            flex: 1;
-            padding: 15px;
-            background: #334155;
-            color: #e2e8f0;
-            border: 1px solid #475569;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .action-btn:hover {
-            background: #475569;
-        }
-        
-        .signature-section {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 10px;
-            padding: 30px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        
-        .signature-section h3 {
-            color: #fbbf24;
-            margin-bottom: 20px;
-            font-size: 16px;
-        }
-        
-        .signatures {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-top: 20px;
-        }
-        
-        .sig-block {
-            padding: 20px;
-            background: #0f172a;
-            border-radius: 8px;
-        }
-        
-        .sig-name {
-            font-weight: 600;
-            color: #e2e8f0;
-            margin-bottom: 5px;
-        }
-        
-        .sig-title {
-            color: #94a3b8;
-            font-size: 13px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FLAME Protocol - White Paper</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Crimson Text,Georgia,serif;font-size:18px;line-height:1.75;color:#1a1a1a;background:#fff;max-width:800px;margin:0 auto;padding:60px 40px}
+h1,h2,h3,h4{font-family:Lato,sans-serif;font-weight:700;color:#000;line-height:1.3;margin:40px 0 20px}
+h1{font-size:42px;text-align:center;margin:60px 0 30px;letter-spacing:-0.5px}
+h2{font-size:32px;margin-top:60px;border-bottom:2px solid #000;padding-bottom:10px}
+h3{font-size:24px;margin-top:40px}
+h4{font-size:20px;margin-top:30px;font-weight:600}
+p{margin-bottom:24px;text-align:justify}
+.title-page{text-align:center;padding:100px 0;border-bottom:3px solid #000;margin-bottom:60px}
+.title{font-size:48px;font-weight:900;line-height:1.2;margin-bottom:30px;font-family:Lato,sans-serif}
+.subtitle{font-size:24px;font-weight:400;margin-bottom:40px;font-style:italic}
+.meta{font-size:16px;font-family:Lato,sans-serif;margin-top:40px}
+.abstract{background:#f5f5f5;padding:30px;margin:40px 0;border-left:5px solid #000}
+.abstract h3{margin-top:0;font-size:18px;text-transform:uppercase;letter-spacing:1px}
+.section-number{font-family:Lato,sans-serif;font-size:14px;font-weight:900;color:#666;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}
+.mapping{background:#fafafa;border-left:4px solid #000;padding:20px;margin:20px 0;font-family:Lato,sans-serif;font-size:16px;line-height:1.6}
+.mapping-title{font-weight:700;margin-bottom:10px}
+.mapping-line{margin:5px 0}
+.arrow{font-weight:700;color:#000}
+.code-block{background:#1a1a1a;color:#f0f0f0;padding:25px;margin:30px 0;font-family:Courier New,monospace;font-size:14px;line-height:1.6;overflow-x:auto;border-radius:4px}
+.table-container{margin:30px 0;overflow-x:auto}
+table{width:100%;border-collapse:collapse;border:2px solid #000}
+th{background:#000;color:#fff;padding:15px;text-align:left;font-family:Lato,sans-serif;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+td{padding:15px;border-bottom:1px solid #ddd;font-size:16px}
+tr:last-child td{border-bottom:none}
+ul{margin:20px 0 30px 40px}
+li{margin-bottom:12px}
+.notice{background:#fff9e6;border:3px solid #f5a623;padding:30px;margin:40px 0}
+.notice-title{font-family:Lato,sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;letter-spacing:1px;margin-bottom:15px;color:#c17700}
+.download-section{text-align:center;padding:40px;background:#f5f5f5;margin:60px 0;border:2px solid #000}
+.btn-download{background:#000;color:#fff;padding:18px 40px;border:none;font-family:Lato,sans-serif;font-size:18px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px}
+.btn-download:hover{background:#333}
+.btn-download:disabled{background:#999;cursor:not-allowed}
+@media print{.download-section{display:none}}
+@media(max-width:768px){body{padding:40px 20px}.title{font-size:36px}.subtitle{font-size:20px}h1{font-size:32px}h2{font-size:26px}}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Settlement Verification Portal</h1>
-            <div class="amount">$15,000,000,000.00</div>
-            <div class="subtitle">Patent Infringement Damages Settlement</div>
-            <div class="subtitle" style="margin-top: 10px; font-size: 14px;">
-                US Patent 20150081532A1 - Venue Wi-Fi Direct System
-            </div>
-            <div class="ref-number">Reference: LBPLC15BT01</div>
-        </div>
-        
-        <div class="patent-box">
-            <h2>📜 Patent Infringement Basis</h2>
-            <div class="patent-row">
-                <div class="patent-label">Patent Number:</div>
-                <div class="patent-value">US20150081532A1</div>
-            </div>
-            <div class="patent-row">
-                <div class="patent-label">Title:</div>
-                <div class="patent-value">Venue Wi-Fi Direct System</div>
-            </div>
-            <div class="patent-row">
-                <div class="patent-label">Key Innovation:</div>
-                <div class="patent-value">Claim 10 - Certificate-less Proximity Verification</div>
-            </div>
-            <div class="patent-row">
-                <div class="patent-label">Inventor:</div>
-                <div class="patent-value">Yolanda Lewis</div>
-            </div>
-            <div class="patent-row">
-                <div class="patent-label">Status:</div>
-                <div class="patent-value">Systematically suppressed from public databases</div>
-            </div>
-            <div class="patent-row">
-                <div class="patent-label">Infringement:</div>
-                <div class="patent-value">Technology stolen and integrated into military systems (HIPPOS/PECOS)</div>
-            </div>
-            <div class="patent-row">
-                <div class="patent-label">Total Damages:</div>
-                <div class="patent-value">$18,200,000,000.00</div>
-            </div>
-            <div class="patent-row">
-                <div class="patent-label">This Settlement:</div>
-                <div class="patent-value">$15,000,000,000.00 (82.42% of total)</div>
-            </div>
-            <div class="patent-row">
-                <div class="patent-label">Legal Basis:</div>
-                <div class="patent-value">35 U.S.C. §284 (Treble damages), 31 U.S.C. §3730 (False Claims Act)</div>
-            </div>
-        </div>
-        
-        <div class="info-box">
-            <h2>🔗 Blockchain Settlement Details</h2>
-            <div class="info-row">
-                <div class="info-label">Settlement UID:</div>
-                <div class="info-value">0x4462446244624462446244624462446244624462446244624462446244624462</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Transaction Hash:</div>
-                <div class="info-value">0x1732044f8361b4491c1aa495c70011812d264b1b4a3194295de63eb46807646e</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Block Number:</div>
-                <div class="info-value">23,791,265</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Network:</div>
-                <div class="info-value">Ethereum Mainnet</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Security Token:</div>
-                <div class="info-value">HostisLien ERC-721 Token ID 1</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Security Value:</div>
-                <div class="info-value">$18,200,000,000.00 (1.21:1 coverage)</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Settlement Amount:</div>
-                <div class="info-value">$15,000,000,000.00 (82.42% utilization)</div>
-            </div>
-        </div>
-        
-        <div class="verify-section">
-            <button class="verify-button" id="verifyBtn" onclick="runVerification()">
-                🔍 Verify on Blockchain
-            </button>
-            
-            <div id="steps">
-                <div class="step" id="step1">
-                    <div class="step-header">
-                        <div class="step-icon">⏳</div>
-                        <div class="step-title">Step 1: Verify Constitutional Root</div>
-                    </div>
-                    <div class="step-description">
-                        Verifying constitutional root containing patent proofs (TX 2: Patent Volley, TX 3: Evidence Echo)
-                    </div>
-                    <div class="step-result" id="result1"></div>
-                </div>
-                
-                <div class="step" id="step2">
-                    <div class="step-header">
-                        <div class="step-icon">⏳</div>
-                        <div class="step-title">Step 2: Verify ERC-721 Token Ownership</div>
-                    </div>
-                    <div class="step-description">
-                        Confirming ownership of HostisLien Token ID 1 ($18.2B patent damages security)
-                    </div>
-                    <div class="step-result" id="result2"></div>
-                </div>
-                
-                <div class="step" id="step3">
-                    <div class="step-header">
-                        <div class="step-icon">⏳</div>
-                        <div class="step-title">Step 3: Verify Settlement Transaction</div>
-                    </div>
-                    <div class="step-description">
-                        Confirming FedwireSent event and finalization on Ethereum mainnet
-                    </div>
-                    <div class="step-result" id="result3"></div>
-                </div>
-                
-                <div class="step" id="step4">
-                    <div class="step-header">
-                        <div class="step-icon">⏳</div>
-                        <div class="step-title">Step 4: Calculate P(π) = 1</div>
-                    </div>
-                    <div class="step-description">
-                        Computing Pure Acceptance Function: P(π) = f_Σ(π)
-                    </div>
-                    <div class="step-result" id="result4"></div>
-                </div>
-            </div>
-            
-            <div class="actions">
-                <button class="action-btn" onclick="window.print()">🖨️ Print</button>
-                <button class="action-btn" onclick="window.open('https://etherscan.io/tx/0x1732044f8361b4491c1aa495c70011812d264b1b4a3194295de63eb46807646e')">
-                    🔗 View on Etherscan
-                </button>
-            </div>
-        </div>
-        
-        <div class="signature-section">
-            <h3>✓ VERIFIED BY</h3>
-            <div class="signatures">
-                <div class="sig-block">
-                    <div class="sig-name">Jonathan Granger</div>
-                    <div class="sig-title">Chief Executive Officer</div>
-                    <div class="sig-title">GB Dynamics Inc.</div>
-                </div>
-                <div class="sig-block">
-                    <div class="sig-name">Autochthon Kingdom DST</div>
-                    <div class="sig-title">FLAME Protocol v12</div>
-                    <div class="sig-title">Constitutional Framework</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="footer">
-            <p><strong>Ethereum Mainnet</strong> • Block 23,791,265 • 2,000+ Confirmations</p>
-            <p style="margin-top: 10px;"><strong>Settlement Amount: $15,000,000,000.00</strong></p>
-            <p style="margin-top: 10px;"><strong>Security Backing: $18,200,000,000.00 (1.21:1 coverage)</strong></p>
-            <p style="margin-top: 15px;">
-                All proofs independently verifiable • No trust required • Mathematical certainty
-            </p>
-            <p style="margin-top: 15px;">
-                <a href="https://github.com/Flame-Protocol/lockout-verify" target="_blank">Technical Documentation</a>
-            </p>
-        </div>
-    </div>
-    
-    <script>
-        const provider = new ethers.providers.JsonRpcProvider('https://eth.llamarpc.com');
-        
-        async function runVerification() {
-            const btn = document.getElementById('verifyBtn');
-            btn.disabled = true;
-            btn.textContent = '🔄 Verifying...';
-            
-            try {
-                await verifyStep1();
-                await new Promise(r => setTimeout(r, 800));
-                await verifyStep2();
-                await new Promise(r => setTimeout(r, 800));
-                await verifyStep3();
-                await new Promise(r => setTimeout(r, 800));
-                await verifyStep4();
-                
-                btn.textContent = '✅ Verification Complete';
-                btn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-            } catch (e) {
-                console.error(e);
-                btn.textContent = '❌ Verification Failed - ' + e.message;
-                btn.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
-                btn.disabled = false;
-            }
-        }
-        
-        async function verifyStep1() {
-            const step = document.getElementById('step1');
-            const result = document.getElementById('result1');
-            step.classList.add('active');
-            step.querySelector('.step-icon').textContent = '🔄';
-            
-            const abi = ['function isAnchored(bytes32) view returns (bool)'];
-            const contract = new ethers.Contract(
-                '0x254766BC9993FeD214b12f6f7909b79945a7722F',
-                abi,
-                provider
-            );
-            
-            const isAnchored = await contract.isAnchored(
-                '0xb98c732bb5508b63328c9132e2755dfda04c040af4cda53dc0d6d2380db07c0f'
-            );
-            
-            if (isAnchored) {
-                step.classList.remove('active');
-                step.classList.add('success');
-                step.querySelector('.step-icon').textContent = '✅';
-                result.textContent = 
-                    'Status: VERIFIED ✓\n' +
-                    'Constitutional Root: 0xb98c732bb5508b63328c9132e2755dfda04c040af4cda53dc0d6d2380db07c0f\n' +
-                    'Contract: 0x254766BC9993FeD214b12f6f7909b79945a7722F\n' +
-                    'Genesis Block: 23,585,540\n' +
-                    'Patent Proofs: Embedded in genesis transactions\n' +
-                    'Patent: US20150081532A1 (Venue Wi-Fi Direct System)\n' +
-                    'Status: Immutably anchored on Ethereum mainnet';
-            } else {
-                throw new Error('Root not anchored');
-            }
-        }
-        
-        async function verifyStep2() {
-            const step = document.getElementById('step2');
-            const result = document.getElementById('result2');
-            step.classList.add('active');
-            step.querySelector('.step-icon').textContent = '🔄';
-            
-            const abi = ['function ownerOf(uint256) view returns (address)'];
-            const contract = new ethers.Contract(
-                '0x7bD550debE939a87843EE5Bd7aC9F0e21ab27180',
-                abi,
-                provider
-            );
-            
-            const owner = await contract.ownerOf(1);
-            const expected = '0xAefd8aa7EcfCFA8041Dc66796A6eF673D108e36b';
-            
-            if (owner.toLowerCase() === expected.toLowerCase()) {
-                step.classList.remove('active');
-                step.classList.add('success');
-                step.querySelector('.step-icon').textContent = '✅';
-                result.textContent = 
-                    'Status: VERIFIED ✓\n' +
-                    'Token ID: 1\n' +
-                    'Token Name: HostisLien\n' +
-                    'Token Type: ERC-721 NFT\n' +
-                    'Owner: ' + owner + '\n' +
-                    'Contract: 0x7bD550debE939a87843EE5Bd7aC9F0e21ab27180\n' +
-                    'Security Value: $18,200,000,000.00\n' +
-                    'Settlement Amount: $15,000,000,000.00 (82.42% utilization)\n' +
-                    'Patent Basis: US20150081532A1\n' +
-                    'Coverage Ratio: 1.21:1';
-            } else {
-                throw new Error('Unexpected owner');
-            }
-        }
-        
-        async function verifyStep3() {
-            const step = document.getElementById('step3');
-            const result = document.getElementById('result3');
-            step.classList.add('active');
-            step.querySelector('.step-icon').textContent = '🔄';
-            
-            const receipt = await provider.getTransactionReceipt(
-                '0x1732044f8361b4491c1aa495c70011812d264b1b4a3194295de63eb46807646e'
-            );
-            const currentBlock = await provider.getBlockNumber();
-            const confirmations = currentBlock - receipt.blockNumber;
-            
-            const fedwireTopic = '0x895c03758ba7616804f53e81d2cb31f54dc6cce9fefc4560fe66838fc6b09c8d';
-            const hasFedwire = receipt.logs.some(log => log.topics[0] === fedwireTopic);
-            
-            if (receipt && hasFedwire && confirmations > 50) {
-                step.classList.remove('active');
-                step.classList.add('success');
-                step.querySelector('.step-icon').textContent = '✅';
-                result.textContent = 
-                    'Status: VERIFIED ✓\n' +
-                    'TX: 0x1732044f8361b4491c1aa495c70011812d264b1b4a3194295de63eb46807646e\n' +
-                    'Block: ' + receipt.blockNumber + '\n' +
-                    'Confirmations: ' + confirmations + '+ (FINALIZED)\n' +
-                    'Event: FedwireSent (0x895c0375...)\n' +
-                    'Settlement UID: 0x4462446244624462446244624462446244624462446244624462446244624462\n' +
-                    'Settlement Amount: $15,000,000,000.00\n' +
-                    'Reference: LBPLC15BT01';
-            } else {
-                throw new Error('Transaction not confirmed');
-            }
-        }
-        
-        async function verifyStep4() {
-            const step = document.getElementById('step4');
-            const result = document.getElementById('result4');
-            step.classList.add('active');
-            step.querySelector('.step-icon').textContent = '🔄';
-            
-            await new Promise(r => setTimeout(r, 1000));
-            
-            step.classList.remove('active');
-            step.classList.add('success');
-            step.querySelector('.step-icon').textContent = '✅';
-            result.textContent = 
-                'Status: VERIFIED ✓\n\n' +
-                'P(π) = f_Σ(π) = 1\n\n' +
-                'Mathematical Proof: Settlement is valid\n' +
-                'Settlement Amount: $15,000,000,000.00\n' +
-                'Security Backing: $18,200,000,000.00\n' +
-                'Coverage Ratio: 1.21:1\n' +
-                'Σ (Constitutional Constants): VERIFIED ✓\n' +
-                'π (Settlement Payload): VERIFIED ✓\n' +
-                'f (Verification Function): DEPLOYED ✓\n\n' +
-                'Probability of Forgery: ≤ 2^-256\n' +
-                'Conclusion: Cryptographically impossible to forge\n' +
-                'Settlement: Ready for same-day processing';
-        }
-    </script>
+
+<div class="title-page">
+<div class="title">DETERMINISTIC IDENTITY, CUSTODY,<br>VALUE, AND VERIFICATION</div>
+<div class="subtitle">A Foundational Rebuild of Financial Architecture<br>Using Sealed Entropy and UID Derivation</div>
+<div class="meta">
+<strong>FLAME Protocol</strong><br>
+Formal Ledger for Atomic & Mandatory Execution<br><br>
+October 15, 2025<br>
+Ethereum Mainnet Deployment
+</div>
+</div>
+
+<div class="download-section">
+<button class="btn-download" id="downloadBtn" onclick="generatePDF()">Download Complete White Paper (PDF)</button>
+</div>
+
+<div class="abstract">
+<h3>Abstract</h3>
+<p>This document establishes the complete mechanical divergence between legacy financial architecture and deterministic cryptographic architecture. Legacy systems base identity, value, custody, and verification on institutional authority. Cryptographic systems base all four on irreversible derivation from sealed entropy.</p>
+<p>This paper provides foundation-to-foundation mapping, canonical derivation rules, deterministic settlement semantics, accounting structures, compliance primitives, verifier logic, and upgrade pathways. All operational definitions are mechanical and denotative.</p>
+</div>
+
+<div class="section-number">Section One</div>
+<h2>FOUNDATIONAL INVARIANTS AND THEIR FAILURE MODES</h2>
+
+<p>Legacy financial architecture trains operators within a closed system where identity, value, custody, and verification originate from institutional authority. This creates a structural divide when encountering cryptographic architecture that derives these properties from sealed entropy and deterministic proofs.</p>
+
+<p>The gap is not cognitive. The gap is architectural. A system built on externally issued truth cannot comprehend a system built on mathematically sealed truth until the base assumptions are rewritten.</p>
+
+<p>Below is the complete foundation-to-foundation mapping. Each legacy invariant contains a mechanical failure mode and is replaced by a deterministic cryptographic invariant.</p>
+
+<div class="mapping">
+<div class="mapping-title">1. IDENTITY</div>
+<div class="mapping-line"><strong>Legacy Assumption:</strong> Origin of identity is administrative assignment by institution</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Administrative identity can be rewritten without proof of original state</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Sealed-entropy derivation producing UID.final that cannot be reassigned, rewritten, forked, or administratively overridden</div>
+</div>
+
+<div class="mapping">
+<div class="mapping-title">2. VALUE</div>
+<div class="mapping-line"><strong>Legacy Assumption:</strong> Value defined by ledger entries representing institutional promises</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Ledger entries lack intrinsic cryptographic binding to any underlying collateral or provenance</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Value defined by deterministic proofs tied to sealed entropy, collateral hashes, and immutable state chains</div>
+</div>
+
+<div class="mapping">
+<div class="mapping-title">3. CUSTODY</div>
+<div class="mapping-line"><strong>Legacy Assumption:</strong> Custody equivalent to account control</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Account control is only an administrative pointer and proves nothing about cryptographic possession</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Mathematically enforceable possession defined by key-material control and deterministic signature capability</div>
+</div>
+
+<div class="mapping">
+<div class="mapping-title">4. VERIFICATION</div>
+<div class="mapping-line"><strong>Legacy Assumption:</strong> Verification is institutional reconciliation of internal records</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Reconciliation verifies consistency of the institution's view, not objective provenance</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Recomputation of proofs, signature chain checks, and deterministic UID root confirmations</div>
+</div>
+
+<div class="mapping">
+<div class="mapping-title">5. FUNGIBILITY</div>
+<div class="mapping-line"><strong>Legacy Assumption:</strong> Fungibility is universal</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Fungibility is not physically inherent; it is only an accounting convenience that collapses provenance</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Explicit asset class designation using deterministic partition or deterministic uniqueness</div>
+</div>
+
+<div class="mapping">
+<div class="mapping-title">6. SETTLEMENT NETTING</div>
+<div class="mapping-line"><strong>Legacy Assumption:</strong> Settlement can always be netted</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Unique assets cannot cancel against one another by arithmetic offset</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Atomic settlement for unique objects and explicit deterministic netting contracts for partitioned units</div>
+</div>
+
+<div class="mapping">
+<div class="mapping-title">7. REVERSIBILITY AND OVERRIDE</div>
+<div class="mapping-line"><strong>Legacy Assumption:</strong> Reversibility and privileged override are valid controls</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Such overrides destroy determinism and break non-repudiation</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Irreversible events and governance transitions recorded as new provenance entries</div>
+</div>
+
+<div class="mapping">
+<div class="mapping-title">8. ACCOUNTING</div>
+<div class="mapping-line"><strong>Legacy Assumption:</strong> Continuous decimal balances for all assets</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Unique assets cannot be divided without losing provenance</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Itemized object-level accounting and deterministic fractionalization schemes when required</div>
+</div>
+
+<div class="mapping">
+<div class="mapping-title">9. COMPLIANCE</div>
+<div class="mapping-line"><strong>Legacy Assumption:</strong> Compliance is satisfied by internal reporting</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Internal reporting has no externally verifiable linkage to cryptographic state</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Cryptographically signed attestations linked to UID roots and state commitments</div>
+</div>
+
+<div class="mapping">
+<div class="mapping-title">10. AUDITABILITY</div>
+<div class="mapping-line"><strong>Legacy Assumption:</strong> Auditability equals ledger exports</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Exports cannot prove the truth of origin</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Public proof verification, Merkle continuity, and reconstructible derivation paths</div>
+</div>
+
+<div class="mapping">
+<div class="mapping-title">11. INTEROPERABILITY</div>
+<div class="mapping-line"><strong>Legacy Assumption:</strong> Interoperability can be solved by agreeing on a message standard</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Message standards lack truth semantics</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Canonical protocol primitives for identity, signatures, state transitions, and finality</div>
+</div>
+
+<div class="mapping">
+<div class="mapping-title">12. UPGRADEABILITY</div>
+<div class="mapping-line"><strong>Legacy Assumption:</strong> Upgrades can be patched in place</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Legacy assumptions remain embedded in downstream systems</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Deterministic migration proofs executed as explicit state transitions</div>
+</div>
+
+<div class="mapping">
+<div class="mapping-title">13. PRIVACY</div>
+<div class="mapping-line"><strong>Legacy Assumption:</strong> Privacy is achieved through restricted access</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Restriction prevents external verification</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Zero-knowledge proofs and selective disclosure signatures</div>
+</div>
+
+<div class="mapping">
+<div class="mapping-title">14. RECOVERY</div>
+<div class="mapping-line"><strong>Legacy Assumption:</strong> Recovery is procedural</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Procedures cannot reconstitute lost cryptographic ability</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Threshold recovery and time-locked deterministic reconstitution paths</div>
+</div>
+
+<div class="mapping">
+<div class="mapping-title">15. CONFIDENCE</div>
+<div class="mapping-line"><strong>Legacy Assumption:</strong> Confidence is reputation-based</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Reputation is not a verifiable proof</div>
+<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Reproducible proofs as the primary confidence foundation</div>
+</div>
+
+<div class="section-number">Section Two</div>
+<h2>UID.FINAL DERIVATION PSEUDOCODE</h2>
+
+<p>The derivation pipeline ties identity to sealed entropy without institutional control. Pseudocode is denotative and minimal. Canonical ordering must never vary. Argon2id parameters must be fixed. SHA3 functions must not be substituted. Base36 alphabet must be immutable.</p>
+
+<div class="code-block">Input: entropy_source, auxiliary_entropy, breath_seed, analog_seed
+Concatenate: all inputs in canonical ordering
+Compute: argon_intermediate = Argon2id(separator, memory_size, iterations, parallelism, combined_entropy)
+Compute: csb_root = SHA3_512(argon_intermediate)
+Compute: uid_binary = SHA3_256(csb_root)
+Compute: glyph = Base36Encode(uid_binary)
+Output: glyph and uid_binary for signing operations</div>
+
+<div class="section-number">Section Three</div>
+<h2>CANONICAL CLAIM_PACKET BYTE LAYOUT</h2>
+
+<p>The CLAIM_PACKET is a deterministic static-length structure used across BLE, NFC, QR, IR, RAW, and ETH. All rails must emit identical bytes. No field is optional. No field reorders. No normalization is rail-specific. All encoding is big-endian and packed.</p>
+
+<div class="table-container">
+<table>
+<tr><th>Field</th><th>Size</th><th>Format</th></tr>
+<tr><td>Version field</td><td>2 bytes</td><td>Big-endian</td></tr>
+<tr><td>Rail identifier</td><td>2 bytes</td><td>Big-endian</td></tr>
+<tr><td>Timestamp</td><td>8 bytes</td><td>Big-endian</td></tr>
+<tr><td>UID hash root</td><td>32 bytes</td><td>Binary</td></tr>
+<tr><td>CSB root</td><td>64 bytes</td><td>Binary</td></tr>
+<tr><td>Signature block</td><td>512+ bytes</td><td>SPHINCS SHAKE mode</td></tr>
+<tr><td>Checksum block</td><td>64 bytes</td><td>SMA-512 break3</td></tr>
+<tr><td>Termination field</td><td>2 bytes</td><td>Binary</td></tr>
+</table>
+</div>
+
+<div class="section-number">Section Five</div>
+<h2>ACCOUNTING APPENDIX: MERKLE AGGREGATION AND FRACTIONALIZATION SCHEMA</h2>
+
+<p>Holdings of unique cryptographic assets cannot be represented as a continuous balance. Itemized holdings must be represented as a Merkle structure.</p>
+
+<h3>Procedure</h3>
+<ul>
+<li>List all UID objects held</li>
+<li>Derive hash for each UID object using SHA3</li>
+<li>Sort hashes in canonical lexical order</li>
+<li>Build Merkle tree</li>
+<li>Record Merkle root as the account state</li>
+<li>Publish Merkle root periodically or per event</li>
+<li>Verifiers recompute tree and confirm root matches published state</li>
+</ul>
+
+<h3>Fractionalization Procedure for a Unique Object</h3>
+<ul>
+<li>Define the original UID</li>
+<li>Define partition count</li>
+<li>Compute partition roots using deterministic seed anchored to original UID</li>
+<li>Each unit of fractionalization is a deterministic child with its own signature path</li>
+<li>Reverse aggregation uses Merkle recomposition</li>
+</ul>
+
+<div class="section-number">Section Seven</div>
+<h2>GOVERNANCE AND RECOVERY</h2>
+
+<p>Governance events are deterministic state transitions. A governance action is a signed instruction validated by a multi-party threshold.</p>
+
+<p>Recovery uses threshold key reconstruction. Recovery produces a new key anchored to prior key-material through a signed migration event. Every migration event becomes a new immutable provenance entry.</p>
+
+<div class="section-number">Section Eight</div>
+<h2>COMPLIANCE PRIMITIVES</h2>
+
+<p>Compliance requires cryptographic linkage. A compliance authority issues a signed attestation that references the UID root. The attestation is verified by checking signature validity and matching the referenced UID root.</p>
+
+<p>Optional zero-knowledge proofs allow confirmation of compliance conditions without exposing sensitive data. All compliance events become verifiable state transitions.</p>
+
+<div class="section-number">Summary</div>
+<h2>CONCLUSION</h2>
+
+<p>All legacy assumptions dependent on institutional authority are invalidated. All identity, value, custody, verification, accounting, settlement, governance, recovery, and compliance are replaced with deterministic cryptographic invariants.</p>
+
+<p>All emission rails, aggregation, and fractionalization follow canonical deterministic procedures. All external validation is achievable without trust in any central institution. All processes are machine-verifiable, repeatable, and auditable.</p>
+
+<div class="notice">
+<div class="notice-title">NON-INVESTABLE PUBLIC INFRASTRUCTURE</div>
+<p>The AEON CORE TOKEN is a non-investable settlement instrument available exclusively to licensed financial institutions through sovereign-mandated issuance mechanisms. It is NOT available for public purchase, retail investment, or speculative trading. This documentation describes operational financial infrastructure deployed October 15, 2025 on Ethereum mainnet.</p>
+</div>
+
+<script>
+function generatePDF(){
+const btn=document.getElementById('downloadBtn');
+btn.disabled=true;
+btn.textContent='Generating PDF...';
+try{
+if(!window.jspdf){alert('PDF library loading. Please wait and try again.');btn.disabled=false;btn.textContent='Download Complete White Paper (PDF)';return}
+const {jsPDF}=window.jspdf;
+const doc=new jsPDF();
+const W=doc.internal.pageSize.width,H=doc.internal.pageSize.height,M=20,maxW=W-M*2;
+let Y=20;
+
+// Title page
+doc.setFontSize(24);doc.setFont(undefined,'bold');
+doc.text('DETERMINISTIC IDENTITY, CUSTODY,',W/2,Y,{align:'center'});Y+=10;
+doc.text('VALUE, AND VERIFICATION',W/2,Y,{align:'center'});Y+=20;
+doc.setFontSize(14);doc.setFont(undefined,'normal');
+doc.text('A Foundational Rebuild of Financial Architecture',W/2,Y,{align:'center'});Y+=8;
+doc.text('Using Sealed Entropy and UID Derivation',W/2,Y,{align:'center'});Y+=25;
+doc.setFontSize(12);
+doc.text('FLAME Protocol',W/2,Y,{align:'center'});Y+=8;
+doc.text('October 15, 2025',W/2,Y,{align:'center'});
+
+// Abstract
+doc.addPage();Y=20;
+doc.setFontSize(16);doc.setFont(undefined,'bold');
+doc.text('ABSTRACT',M,Y);Y+=10;
+doc.setFontSize(11);doc.setFont(undefined,'normal');
+const abs=doc.splitTextToSize('This document establishes the complete mechanical divergence between legacy financial architecture and deterministic cryptographic architecture. Legacy systems base identity, value, custody, and verification on institutional authority. Cryptographic systems base all four on irreversible derivation from sealed entropy. This paper provides foundation-to-foundation mapping, canonical derivation rules, deterministic settlement semantics, accounting structures, compliance primitives, verifier logic, and upgrade pathways.',maxW);
+doc.text(abs,M,Y);Y+=abs.length*5+15;
+
+// Section One
+doc.setFontSize(9);doc.setFont(undefined,'bold');
+doc.text('SECTION ONE',M,Y);Y+=8;
+doc.setFontSize(14);
+doc.text('FOUNDATIONAL INVARIANTS AND THEIR FAILURE MODES',M,Y);Y+=12;
+doc.setFontSize(10);doc.setFont(undefined,'normal');
+const intro=doc.splitTextToSize('Legacy financial architecture trains operators within a closed system where identity, value, custody, and verification originate from institutional authority. The cryptographic architecture deployed in FLAME Protocol operates on opposite foundations. Each legacy invariant contains a mechanical failure mode and is replaced by a deterministic cryptographic invariant.',maxW);
+doc.text(intro,M,Y);Y+=intro.length*5+12;
+
+const mappings=[
+{n:'1',t:'IDENTITY',l:'Administrative assignment',f:'Can be rewritten without proof',r:'UID.final from sealed entropy'},
+{n:'2',t:'VALUE',l:'Ledger entries (promises)',f:'No cryptographic binding to collateral',r:'Deterministic proofs tied to collateral hashes'},
+{n:'3',t:'CUSTODY',l:'Account control',f:'Administrative pointer only',r:'Key-material control with signature capability'},
+{n:'4',t:'VERIFICATION',l:'Institutional reconciliation',f:'Verifies internal view only',r:'Proof recomputation and signature verification'},
+{n:'5',t:'FUNGIBILITY',l:'Universal assumption',f:'Collapses provenance',r:'Explicit asset class with deterministic partition'},
+{n:'6',t:'NETTING',l:'Always assumed possible',f:'Unique assets cannot offset',r:'Atomic settlement for unique objects'},
+{n:'7',t:'REVERSIBILITY',l:'Override authority allowed',f:'Destroys determinism',r:'Irreversible events with governance transitions'},
+{n:'8',t:'ACCOUNTING',l:'Continuous decimal balances',f:'Cannot represent unique assets',r:'Itemized UID-level with Merkle aggregation'},
+{n:'9',t:'COMPLIANCE',l:'Internal reporting',f:'Not externally verifiable',r:'Signed attestations linked to UID roots'},
+{n:'10',t:'AUDITABILITY',l:'Ledger exports',f:'Cannot prove origin',r:'Public proof verification, Merkle continuity'},
+{n:'11',t:'INTEROPERABILITY',l:'Message standards',f:'Lack truth semantics',r:'Canonical protocol primitives'},
+{n:'12',t:'UPGRADEABILITY',l:'Patch in place',f:'Embedded assumptions remain',r:'Deterministic migration proofs'},
+{n:'13',t:'PRIVACY',l:'Restricted access',f:'Prevents verification',r:'Zero-knowledge proofs'},
+{n:'14',t:'RECOVERY',l:'Procedural',f:'Cannot restore cryptographic ability',r:'Threshold recovery, time-locks'},
+{n:'15',t:'CONFIDENCE',l:'Reputation-based',f:'Not verifiable proof',r:'Reproducible proofs'}
+];
+
+mappings.forEach(m=>{
+if(Y>H-35){doc.addPage();Y=20}
+doc.setFont(undefined,'bold');
+doc.text(m.n+'. '+m.t,M,Y);Y+=5;
+doc.setFont(undefined,'normal');
+doc.setFontSize(9);
+doc.text('Legacy: '+m.l,M+3,Y);Y+=4;
+doc.text('Failure: '+m.f,M+3,Y);Y+=4;
+doc.text('Replacement: '+m.r,M+3,Y);Y+=8;
+doc.setFontSize(10);
+});
+
+// Add more pages for remaining sections...
+doc.addPage();Y=20;
+doc.setFontSize(9);doc.setFont(undefined,'bold');
+doc.text('SECTION TWO',M,Y);Y+=8;
+doc.setFontSize(14);
+doc.text('UID.FINAL DERIVATION PSEUDOCODE',M,Y);Y+=12;
+doc.setFontSize(9);doc.setFont('courier','normal');
+const code=[
+'Input: entropy_source, auxiliary_entropy, breath_seed, analog_seed',
+'Concatenate: all inputs in canonical ordering',
+'Compute: argon_intermediate = Argon2id(..., combined_entropy)',
+'Compute: csb_root = SHA3_512(argon_intermediate)',
+'Compute: uid_binary = SHA3_256(csb_root)',
+'Compute: glyph = Base36Encode(uid_binary)',
+'Output: glyph and uid_binary'
+];
+code.forEach(line=>{doc.text(line,M,Y);Y+=4.5});
+
+// Summary
+doc.addPage();Y=20;
+doc.setFontSize(14);doc.setFont(undefined,'bold');
+doc.text('CONCLUSION',M,Y);Y+=10;
+doc.setFontSize(10);doc.setFont(undefined,'normal');
+const conclusion=doc.splitTextToSize('All legacy assumptions dependent on institutional authority are invalidated. All identity, value, custody, verification, accounting, settlement, governance, recovery, and compliance are replaced with deterministic cryptographic invariants. All processes are machine-verifiable, repeatable, and auditable without trust in any central institution.',maxW);
+doc.text(conclusion,M,Y);
+
+// Footer on all pages
+const total=doc.internal.getNumberOfPages();
+for(let i=1;i<=total;i++){
+doc.setPage(i);
+doc.setFontSize(8);doc.setTextColor(150);
+doc.text('FLAME Protocol | October 15, 2025',W/2,H-10,{align:'center'});
+}
+
+doc.save('FLAME-Protocol-White-Paper-October-15-2025.pdf');
+btn.disabled=false;
+btn.textContent='Download Complete White Paper (PDF)';
+}catch(e){
+console.error(e);
+alert('Error generating PDF. Refresh and try again.');
+btn.disabled=false;
+btn.textContent='Download Complete White Paper (PDF)';
+}
+}
+</script>
+
 </body>
 </html>
