@@ -1,385 +1,934 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FLAME Protocol - White Paper</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700;900&display=swap');
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Crimson Text,Georgia,serif;font-size:18px;line-height:1.75;color:#1a1a1a;background:#fff;max-width:800px;margin:0 auto;padding:60px 40px}
-h1,h2,h3,h4{font-family:Lato,sans-serif;font-weight:700;color:#000;line-height:1.3;margin:40px 0 20px}
-h1{font-size:42px;text-align:center;margin:60px 0 30px;letter-spacing:-0.5px}
-h2{font-size:32px;margin-top:60px;border-bottom:2px solid #000;padding-bottom:10px}
-h3{font-size:24px;margin-top:40px}
-h4{font-size:20px;margin-top:30px;font-weight:600}
-p{margin-bottom:24px;text-align:justify}
-.title-page{text-align:center;padding:100px 0;border-bottom:3px solid #000;margin-bottom:60px}
-.title{font-size:48px;font-weight:900;line-height:1.2;margin-bottom:30px;font-family:Lato,sans-serif}
-.subtitle{font-size:24px;font-weight:400;margin-bottom:40px;font-style:italic}
-.meta{font-size:16px;font-family:Lato,sans-serif;margin-top:40px}
-.abstract{background:#f5f5f5;padding:30px;margin:40px 0;border-left:5px solid #000}
-.abstract h3{margin-top:0;font-size:18px;text-transform:uppercase;letter-spacing:1px}
-.section-number{font-family:Lato,sans-serif;font-size:14px;font-weight:900;color:#666;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}
-.mapping{background:#fafafa;border-left:4px solid #000;padding:20px;margin:20px 0;font-family:Lato,sans-serif;font-size:16px;line-height:1.6}
-.mapping-title{font-weight:700;margin-bottom:10px}
-.mapping-line{margin:5px 0}
-.arrow{font-weight:700;color:#000}
-.code-block{background:#1a1a1a;color:#f0f0f0;padding:25px;margin:30px 0;font-family:Courier New,monospace;font-size:14px;line-height:1.6;overflow-x:auto;border-radius:4px}
-.table-container{margin:30px 0;overflow-x:auto}
-table{width:100%;border-collapse:collapse;border:2px solid #000}
-th{background:#000;color:#fff;padding:15px;text-align:left;font-family:Lato,sans-serif;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
-td{padding:15px;border-bottom:1px solid #ddd;font-size:16px}
-tr:last-child td{border-bottom:none}
-ul{margin:20px 0 30px 40px}
-li{margin-bottom:12px}
-.notice{background:#fff9e6;border:3px solid #f5a623;padding:30px;margin:40px 0}
-.notice-title{font-family:Lato,sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;letter-spacing:1px;margin-bottom:15px;color:#c17700}
-.download-section{text-align:center;padding:40px;background:#f5f5f5;margin:60px 0;border:2px solid #000}
-.btn-download{background:#000;color:#fff;padding:18px 40px;border:none;font-family:Lato,sans-serif;font-size:18px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px}
-.btn-download:hover{background:#333}
-.btn-download:disabled{background:#999;cursor:not-allowed}
-@media print{.download-section{display:none}}
-@media(max-width:768px){body{padding:40px 20px}.title{font-size:36px}.subtitle{font-size:20px}h1{font-size:32px}h2{font-size:26px}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLAME Protocol | October 15, 2025 Deployment | Post-Quantum Settlement Infrastructure</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@400;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, system-ui, sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        .document-header {
+            background: #0f1419;
+            color: #ffffff;
+            padding: 2rem 0;
+            border-bottom: 4px solid #0066cc;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 3rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .doc-title {
+            font-family: 'IBM Plex Serif', serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .doc-date {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #aaaaaa;
+        }
+
+        .document-body {
+            padding: 4rem 0;
+        }
+
+        .section {
+            margin-bottom: 5rem;
+        }
+
+        .section-number {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #0066cc;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-family: 'IBM Plex Serif', serif;
+            font-size: 2.8rem;
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            color: #0f1419;
+            letter-spacing: -0.02em;
+        }
+
+        h2 {
+            font-family: 'IBM Plex Serif', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 1.5rem;
+            color: #0f1419;
+            letter-spacing: -0.01em;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+            color: #0f1419;
+        }
+
+        .lead {
+            font-size: 1.25rem;
+            line-height: 1.7;
+            color: #333333;
+            margin-bottom: 2rem;
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            color: #333333;
+        }
+
+        .notice-box {
+            background: #fff8e6;
+            border-left: 4px solid #cc8800;
+            padding: 2rem;
+            margin: 2.5rem 0;
+        }
+
+        .notice-box h4 {
+            color: #cc8800;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .timeline-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            border: 1px solid #e0e0e0;
+        }
+
+        .timeline-table th {
+            background: #f5f5f5;
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid #0066cc;
+        }
+
+        .timeline-table td {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+            vertical-align: top;
+        }
+
+        .timeline-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .date-cell {
+            font-weight: 600;
+            color: #0066cc;
+            white-space: nowrap;
+            width: 150px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            border: 1px solid #e0e0e0;
+        }
+
+        .comparison-table thead {
+            background: #0f1419;
+            color: #ffffff;
+        }
+
+        .comparison-table th {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .comparison-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .comparison-table tbody tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .status-operational {
+            display: inline-block;
+            background: #d4edda;
+            color: #155724;
+            padding: 0.3rem 0.8rem;
+            border-radius: 3px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-legacy {
+            display: inline-block;
+            background: #f8d7da;
+            color: #721c24;
+            padding: 0.3rem 0.8rem;
+            border-radius: 3px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .spec-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .spec-item {
+            padding: 1.5rem;
+            border: 1px solid #e0e0e0;
+            background: #fafafa;
+        }
+
+        .spec-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #666666;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .spec-value {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #0f1419;
+        }
+
+        .subsection {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+            color: #333333;
+        }
+
+        .download-section {
+            background: #f5f5f5;
+            padding: 3rem;
+            margin: 4rem 0;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .download-section h3 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            margin: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #0066cc;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #0052a3;
+        }
+
+        .btn-primary:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .document-footer {
+            background: #0f1419;
+            color: #aaaaaa;
+            padding: 3rem 0;
+            margin-top: 5rem;
+            font-size: 0.9rem;
+        }
+
+        .footer-content {
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        @media print {
+            .download-section, .document-footer {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .spec-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .comparison-table {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <header class="document-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="doc-title">FLAME Protocol Deployment Documentation</div>
+                <div class="doc-date">October 15, 2025</div>
+            </div>
+        </div>
+    </header>
 
-<div class="title-page">
-<div class="title">DETERMINISTIC IDENTITY, CUSTODY,<br>VALUE, AND VERIFICATION</div>
-<div class="subtitle">A Foundational Rebuild of Financial Architecture<br>Using Sealed Entropy and UID Derivation</div>
-<div class="meta">
-<strong>FLAME Protocol</strong><br>
-Formal Ledger for Atomic & Mandatory Execution<br><br>
-October 15, 2025<br>
-Ethereum Mainnet Deployment
-</div>
-</div>
+    <main class="document-body">
+        <div class="container">
+            <!-- Section 1: Executive Summary -->
+            <section class="section">
+                <div class="section-number">Section 1</div>
+                <h1>Deployment of Post-Quantum Settlement Infrastructure</h1>
+                <p class="lead">
+                    On October 15, 2025, the FLAME (Formal Ledger for Atomic & Mandatory Execution) Protocol became operational on Ethereum mainnet, establishing the first mathematically-deterministic settlement layer with post-quantum cryptographic security.
+                </p>
+                <p>
+                    This deployment occurred 38 days prior to the November 22, 2025 SWIFT transition to ISO 20022 CBPR+. The constitutional framework is deployed as immutable on-chain law. The Algebraic Verifier executes autonomous enforcement. The Pure Acceptance Function evaluates transaction compliance through cryptographic causality.
+                </p>
+                <p>
+                    This is operational financial infrastructure with clean title, full chain of custody, and AI-integrated autonomous management—capabilities that ISO 20022 integrated blockchains (XRP, XLM, ALGO, HBAR, QNT) do not possess.
+                </p>
 
-<div class="download-section">
-<button class="btn-download" id="downloadBtn" onclick="generatePDF()">Download Complete White Paper (PDF)</button>
-</div>
+                <div class="notice-box">
+                    <h4>Non-Investable Public Infrastructure</h4>
+                    <p style="margin-bottom: 0;">
+                        The AEON CORE TOKEN is a non-investable settlement instrument available exclusively to licensed financial institutions through sovereign-mandated issuance mechanisms. It is NOT available for public purchase, retail investment, or speculative trading. This documentation describes operational financial infrastructure.
+                    </p>
+                </div>
+            </section>
 
-<div class="abstract">
-<h3>Abstract</h3>
-<p>This document establishes the complete mechanical divergence between legacy financial architecture and deterministic cryptographic architecture. Legacy systems base identity, value, custody, and verification on institutional authority. Cryptographic systems base all four on irreversible derivation from sealed entropy.</p>
-<p>This paper provides foundation-to-foundation mapping, canonical derivation rules, deterministic settlement semantics, accounting structures, compliance primitives, verifier logic, and upgrade pathways. All operational definitions are mechanical and denotative.</p>
-</div>
+            <!-- Section 2: Critical Timeline -->
+            <section class="section">
+                <div class="section-number">Section 2</div>
+                <h2>Critical Deployment Timeline</h2>
+                <p>
+                    The following timeline demonstrates FLAME's operational status prior to the global ISO 20022 transition:
+                </p>
 
-<div class="section-number">Section One</div>
-<h2>FOUNDATIONAL INVARIANTS AND THEIR FAILURE MODES</h2>
+                <table class="timeline-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Event</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="date-cell">October 15, 2025</td>
+                            <td>
+                                <strong>FLAME Protocol Operational</strong><br>
+                                Constitutional framework deployed on Ethereum mainnet. Algebraic Verifier executing. Pure Acceptance Function (P) operational. Token ID 1 deployed with $18.2 billion sovereign lien backing.
+                            </td>
+                            <td><span class="status-operational">OPERATIONAL</span></td>
+                        </tr>
+                        <tr>
+                            <td class="date-cell">November 17, 2025</td>
+                            <td>
+                                <strong>ISO 20022 CBPR+ Official Activation</strong><br>
+                                SWIFT activates new messaging standard globally.
+                            </td>
+                            <td><span class="status-legacy">PENDING</span></td>
+                        </tr>
+                        <tr>
+                            <td class="date-cell">November 22, 2025</td>
+                            <td>
+                                <strong>SWIFT Full ISO 20022 Transition</strong><br>
+                                All SWIFT MT formats discontinued. 11,000+ banks adopt digital exchange standard. Integration with XRP, XLM, ALGO, HBAR, QNT blockchains—none with post-quantum security or clean title infrastructure.
+                            </td>
+                            <td><span class="status-legacy">ARCHITECTURALLY SUPERSEDED</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
 
-<p>Legacy financial architecture trains operators within a closed system where identity, value, custody, and verification originate from institutional authority. This creates a structural divide when encountering cryptographic architecture that derives these properties from sealed entropy and deterministic proofs.</p>
+            <!-- Section 3: Architectural Comparison -->
+            <section class="section">
+                <div class="section-number">Section 3</div>
+                <h2>Architectural Comparison: FLAME vs. ISO 20022 Implementations</h2>
+                <p>
+                    The following table provides a technical comparison of FLAME Protocol capabilities versus ISO 20022 blockchain implementations:
+                </p>
 
-<p>The gap is not cognitive. The gap is architectural. A system built on externally issued truth cannot comprehend a system built on mathematically sealed truth until the base assumptions are rewritten.</p>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Capability</th>
+                            <th>FLAME Protocol</th>
+                            <th>ISO 20022 Blockchains</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Cryptographic Security</strong></td>
+                            <td>SPHINCS+ (NIST PQC Standard), SHAKE128 hashing, Argon2id key derivation—quantum-resistant</td>
+                            <td>ECDSA/EdDSA—vulnerable to quantum computing attacks</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Settlement Finality</strong></td>
+                            <td>T+0 mathematical proof via deterministic state agreement</td>
+                            <td>T+2 to T+3 legal finality with reconciliation requirements</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Title & Chain of Custody</strong></td>
+                            <td>Clean, unencumbered with full chain of title and proper security agreements</td>
+                            <td>Pooling and servicing of debt obligations under color of law without proper security agreements</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Collateral Backing</strong></td>
+                            <td>Token ID 1: $18.2 billion deployed sovereign lien providing zero counterparty risk</td>
+                            <td>Trust-based settlement with counterparty risk</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Enforcement Mechanism</strong></td>
+                            <td>Pure Acceptance Function P(π) with autonomous algebraic nullification—no human override</td>
+                            <td>Manual oversight and human dispute resolution required</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AI Integration</strong></td>
+                            <td>Autonomous liquidity management, real-time RegAI compliance, self-healing adaptive immune system</td>
+                            <td>Cannot support sovereign-level AI due to probabilistic consensus—requires human oversight</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Settlement Gateway Scope</strong></td>
+                            <td>Universal: all asset types, CBDCs, cross-border transfers, tokenized bonds—no limitations</td>
+                            <td>Restricted by banking partnerships and regulatory approval processes</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Reconciliation Requirements</strong></td>
+                            <td>Zero—eliminated through deterministic state agreement</td>
+                            <td>Post-settlement reconciliation required, locking $5+ trillion in nostro/vostro accounts globally</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
 
-<p>Below is the complete foundation-to-foundation mapping. Each legacy invariant contains a mechanical failure mode and is replaced by a deterministic cryptographic invariant.</p>
+            <!-- Section 4: AI Integration -->
+            <section class="section">
+                <div class="section-number">Section 4</div>
+                <h2>AI Nervous System: Autonomous Financial Infrastructure</h2>
+                <p>
+                    FLAME integrates artificial intelligence as its operational nervous system, creating self-optimizing capabilities that ISO 20022 blockchain implementations cannot replicate due to their probabilistic consensus foundations.
+                </p>
 
-<div class="mapping">
-<div class="mapping-title">1. IDENTITY</div>
-<div class="mapping-line"><strong>Legacy Assumption:</strong> Origin of identity is administrative assignment by institution</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Administrative identity can be rewritten without proof of original state</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Sealed-entropy derivation producing UID.final that cannot be reassigned, rewritten, forked, or administratively overridden</div>
-</div>
+                <h3>4.1 Autonomous Liquidity Management</h3>
+                <p>
+                    AI agents continuously manage liquidity in real-time, predicting transaction flows and pre-positioning AEON tokens and digital assets across the network. This eliminates the $5 trillion global reconciliation tax through algorithmic arbitrage. Predictive settlement routing dynamically identifies optimal paths for transactions, considering cost, speed, regulatory constraints, and counterparty risk.
+                </p>
 
-<div class="mapping">
-<div class="mapping-title">2. VALUE</div>
-<div class="mapping-line"><strong>Legacy Assumption:</strong> Value defined by ledger entries representing institutional promises</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Ledger entries lack intrinsic cryptographic binding to any underlying collateral or provenance</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Value defined by deterministic proofs tied to sealed entropy, collateral hashes, and immutable state chains</div>
-</div>
+                <h3>4.2 RegAI: Autonomous Regulation & Compliance</h3>
+                <p>
+                    The system performs continuous 100% audit of all transactions in real-time, analyzing for anomalous patterns and emergent systemic risks. AML, CFT, and sanctions compliance rules are expressed as machine-readable policies enforced with perfect precision 24/7. The AI can test proposed regulations against live, anonymized network data before enactment, transforming regulation from political conjecture into empirical science.
+                </p>
+                <p>
+                    The Pure Acceptance Function P(π) activates sovereign enforcement instantly when constitutional rules are violated—without court orders, human delay, or susceptibility to corruption. Rejection is automatic, auditable, and mathematically certain.
+                </p>
 
-<div class="mapping">
-<div class="mapping-title">3. CUSTODY</div>
-<div class="mapping-line"><strong>Legacy Assumption:</strong> Custody equivalent to account control</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Account control is only an administrative pointer and proves nothing about cryptographic possession</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Mathematically enforceable possession defined by key-material control and deterministic signature capability</div>
-</div>
+                <h3>4.3 Self-Healing & Adaptive Evolution</h3>
+                <p>
+                    AI monitors network performance metrics and can propose protocol-level optimizations. A parallel "digital twin" of the entire network continuously undergoes stress testing with hypothetical scenarios including major bank failures, quantum computing breakthroughs, and coordinated cyber-attacks. Vulnerabilities are discovered before exploitation, and defensive measures are automatically suggested. The financial system develops an adaptive immune system.
+                </p>
 
-<div class="mapping">
-<div class="mapping-title">4. VERIFICATION</div>
-<div class="mapping-line"><strong>Legacy Assumption:</strong> Verification is institutional reconciliation of internal records</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Reconciliation verifies consistency of the institution's view, not objective provenance</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Recomputation of proofs, signature chain checks, and deterministic UID root confirmations</div>
-</div>
+                <h3>4.4 Why ISO 20022 Implementations Cannot Replicate This</h3>
+                <p>
+                    This level of AI automation requires FLAME's immutable, deterministic, high-integrity data layer. Without a single source of cryptographic truth, AI operates on garbage-in-garbage-out principles. The ISO 20022 blockchains (XRP, XLM, ALGO, HBAR, QNT) are built on probabilistic consensus and lack the constitutional framework required for AI to operate with sovereign-level authority. Autonomous regulation cannot be retrofitted onto systems designed for human oversight.
+                </p>
+            </section>
 
-<div class="mapping">
-<div class="mapping-title">5. FUNGIBILITY</div>
-<div class="mapping-line"><strong>Legacy Assumption:</strong> Fungibility is universal</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Fungibility is not physically inherent; it is only an accounting convenience that collapses provenance</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Explicit asset class designation using deterministic partition or deterministic uniqueness</div>
-</div>
+            <!-- Section 5: Technical Specifications -->
+            <section class="section">
+                <div class="section-number">Section 5</div>
+                <h2>Technical Specifications</h2>
 
-<div class="mapping">
-<div class="mapping-title">6. SETTLEMENT NETTING</div>
-<div class="mapping-line"><strong>Legacy Assumption:</strong> Settlement can always be netted</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Unique assets cannot cancel against one another by arithmetic offset</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Atomic settlement for unique objects and explicit deterministic netting contracts for partitioned units</div>
-</div>
+                <div class="spec-grid">
+                    <div class="spec-item">
+                        <div class="spec-label">Deployment Status</div>
+                        <div class="spec-value">Operational since October 15, 2025</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Network</div>
+                        <div class="spec-value">Ethereum Mainnet</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Post-Quantum Signatures</div>
+                        <div class="spec-value">SPHINCS+ (NIST PQC Standard)</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Hash Function</div>
+                        <div class="spec-value">SHAKE128 (128-bit collision resistance)</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Key Derivation</div>
+                        <div class="spec-value">Argon2id (Memory-hard, GPU-resistant)</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Hardware Integration</div>
+                        <div class="spec-value">YubiKey 5 Series FIDO2/U2F</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Settlement Finality</div>
+                        <div class="spec-value">T+0 Mathematical Proof</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Enforcement</div>
+                        <div class="spec-value">Pure Acceptance Function P(π)</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Collateral Backing</div>
+                        <div class="spec-value">Token ID 1: $18.2B sovereign lien</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Title Status</div>
+                        <div class="spec-value">Clean, unencumbered, full chain of custody</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">AI Integration</div>
+                        <div class="spec-value">Autonomous liquidity, RegAI, adaptive immune system</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Cryptographic Bound</div>
+                        <div class="spec-value">Pr[forge] ≤ 2⁻²⁵⁶</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Access Model</div>
+                        <div class="spec-value">Licensed institutions only</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Public Availability</div>
+                        <div class="spec-value">NOT publicly tradable</div>
+                    </div>
+                </div>
+            </section>
 
-<div class="mapping">
-<div class="mapping-title">7. REVERSIBILITY AND OVERRIDE</div>
-<div class="mapping-line"><strong>Legacy Assumption:</strong> Reversibility and privileged override are valid controls</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Such overrides destroy determinism and break non-repudiation</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Irreversible events and governance transitions recorded as new provenance entries</div>
-</div>
+            <!-- Download Section -->
+            <div class="download-section">
+                <h3>Technical Documentation</h3>
+                <p style="margin-bottom: 2rem;">Download comprehensive technical overview for institutional review</p>
+                <button class="btn btn-primary" id="downloadBtn" onclick="generatePDF()">
+                    Download PDF Documentation
+                </button>
+            </div>
+        </div>
+    </main>
 
-<div class="mapping">
-<div class="mapping-title">8. ACCOUNTING</div>
-<div class="mapping-line"><strong>Legacy Assumption:</strong> Continuous decimal balances for all assets</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Unique assets cannot be divided without losing provenance</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Itemized object-level accounting and deterministic fractionalization schemes when required</div>
-</div>
+    <footer class="document-footer">
+        <div class="container">
+            <div class="footer-content">
+                <strong>FLAME Protocol</strong> — Formal Ledger for Atomic & Mandatory Execution<br>
+                Operational Infrastructure | October 15, 2025 | Ethereum Mainnet<br><br>
+                The FLAME Protocol is operational financial infrastructure. The AEON CORE TOKEN is a non-investable settlement instrument available exclusively to licensed financial institutions. This material is informational only and under no circumstances constitutes an offer, solicitation, or recommendation to purchase, hold, or transact in any asset.
+            </div>
+        </div>
+    </footer>
 
-<div class="mapping">
-<div class="mapping-title">9. COMPLIANCE</div>
-<div class="mapping-line"><strong>Legacy Assumption:</strong> Compliance is satisfied by internal reporting</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Internal reporting has no externally verifiable linkage to cryptographic state</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Cryptographically signed attestations linked to UID roots and state commitments</div>
-</div>
+    <script>
+        function generatePDF() {
+            const btn = document.getElementById('downloadBtn');
+            btn.disabled = true;
+            btn.textContent = 'Generating PDF...';
 
-<div class="mapping">
-<div class="mapping-title">10. AUDITABILITY</div>
-<div class="mapping-line"><strong>Legacy Assumption:</strong> Auditability equals ledger exports</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Exports cannot prove the truth of origin</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Public proof verification, Merkle continuity, and reconstructible derivation paths</div>
-</div>
+            try {
+                if (!window.jspdf) {
+                    alert('PDF library is loading. Please wait a moment and try again.');
+                    btn.disabled = false;
+                    btn.textContent = 'Download PDF Documentation';
+                    return;
+                }
 
-<div class="mapping">
-<div class="mapping-title">11. INTEROPERABILITY</div>
-<div class="mapping-line"><strong>Legacy Assumption:</strong> Interoperability can be solved by agreeing on a message standard</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Message standards lack truth semantics</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Canonical protocol primitives for identity, signatures, state transitions, and finality</div>
-</div>
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                const pageWidth = doc.internal.pageSize.width;
+                const pageHeight = doc.internal.pageSize.height;
+                const margin = 20;
+                const maxWidth = pageWidth - (margin * 2);
+                let yPosition = 20;
 
-<div class="mapping">
-<div class="mapping-title">12. UPGRADEABILITY</div>
-<div class="mapping-line"><strong>Legacy Assumption:</strong> Upgrades can be patched in place</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Legacy assumptions remain embedded in downstream systems</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Deterministic migration proofs executed as explicit state transitions</div>
-</div>
+                // Cover Page
+                doc.setFillColor(15, 20, 25);
+                doc.rect(0, 0, pageWidth, 60, 'F');
+                
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(24);
+                doc.setFont(undefined, 'bold');
+                doc.text('FLAME PROTOCOL', pageWidth / 2, 30, { align: 'center' });
+                
+                doc.setFontSize(14);
+                doc.setFont(undefined, 'normal');
+                doc.text('Deployment Documentation', pageWidth / 2, 45, { align: 'center' });
+                
+                doc.setTextColor(0, 0, 0);
+                yPosition = 80;
+                
+                doc.setFontSize(11);
+                doc.setTextColor(0, 102, 204);
+                doc.text('October 15, 2025', pageWidth / 2, yPosition, { align: 'center' });
+                yPosition += 20;
+                
+                doc.setFontSize(10);
+                doc.setTextColor(0, 0, 0);
+                const coverText = 'Post-Quantum Settlement Infrastructure: Deployed 38 days prior to November 22, 2025 SWIFT ISO 20022 transition';
+                const coverLines = doc.splitTextToSize(coverText, maxWidth - 20);
+                doc.text(coverLines, pageWidth / 2, yPosition, { align: 'center' });
 
-<div class="mapping">
-<div class="mapping-title">13. PRIVACY</div>
-<div class="mapping-line"><strong>Legacy Assumption:</strong> Privacy is achieved through restricted access</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Restriction prevents external verification</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Zero-knowledge proofs and selective disclosure signatures</div>
-</div>
+                // Section 1
+                doc.addPage();
+                yPosition = 20;
+                
+                doc.setFontSize(9);
+                doc.setTextColor(0, 102, 204);
+                doc.text('SECTION 1', margin, yPosition);
+                yPosition += 8;
+                
+                doc.setFontSize(16);
+                doc.setTextColor(0, 0, 0);
+                doc.setFont(undefined, 'bold');
+                doc.text('Executive Summary', margin, yPosition);
+                yPosition += 10;
+                
+                doc.setFontSize(10);
+                doc.setFont(undefined, 'normal');
+                const exec1 = 'On October 15, 2025, the FLAME (Formal Ledger for Atomic & Mandatory Execution) Protocol became operational on Ethereum mainnet. This deployment occurred 38 days prior to the November 22, 2025 SWIFT transition to ISO 20022 CBPR+.';
+                const exec1Lines = doc.splitTextToSize(exec1, maxWidth);
+                doc.text(exec1Lines, margin, yPosition);
+                yPosition += exec1Lines.length * 5 + 8;
+                
+                const exec2 = 'The constitutional framework is deployed as immutable on-chain law with post-quantum cryptographic security (SPHINCS+), clean title with full chain of custody, and AI-integrated autonomous management—capabilities that ISO 20022 integrated blockchains (XRP, XLM, ALGO, HBAR, QNT) do not possess.';
+                const exec2Lines = doc.splitTextToSize(exec2, maxWidth);
+                doc.text(exec2Lines, margin, yPosition);
+                yPosition += exec2Lines.length * 5 + 12;
+                
+                // Non-Investable Notice
+                doc.setFillColor(255, 248, 230);
+                doc.rect(margin, yPosition, maxWidth, 35, 'F');
+                doc.setDrawColor(204, 136, 0);
+                doc.setLineWidth(2);
+                doc.line(margin, yPosition, margin, yPosition + 35);
+                
+                yPosition += 8;
+                doc.setFontSize(9);
+                doc.setTextColor(204, 136, 0);
+                doc.setFont(undefined, 'bold');
+                doc.text('NON-INVESTABLE PUBLIC INFRASTRUCTURE', margin + 5, yPosition);
+                yPosition += 6;
+                
+                doc.setFontSize(9);
+                doc.setTextColor(0, 0, 0);
+                doc.setFont(undefined, 'normal');
+                const noticeText = 'The AEON CORE TOKEN is a non-investable settlement instrument available exclusively to licensed financial institutions. NOT available for public purchase, retail investment, or speculative trading.';
+                const noticeLines = doc.splitTextToSize(noticeText, maxWidth - 10);
+                doc.text(noticeLines, margin + 5, yPosition);
+                yPosition += noticeLines.length * 4.5 + 15;
+                
+                doc.setDrawColor(0);
+                doc.setLineWidth(0.1);
 
-<div class="mapping">
-<div class="mapping-title">14. RECOVERY</div>
-<div class="mapping-line"><strong>Legacy Assumption:</strong> Recovery is procedural</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Procedures cannot reconstitute lost cryptographic ability</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Threshold recovery and time-locked deterministic reconstitution paths</div>
-</div>
+                // Section 2 - Timeline
+                doc.addPage();
+                yPosition = 20;
+                
+                doc.setFontSize(9);
+                doc.setTextColor(0, 102, 204);
+                doc.text('SECTION 2', margin, yPosition);
+                yPosition += 8;
+                
+                doc.setFontSize(14);
+                doc.setTextColor(0, 0, 0);
+                doc.setFont(undefined, 'bold');
+                doc.text('Critical Deployment Timeline', margin, yPosition);
+                yPosition += 12;
+                
+                doc.setFontSize(10);
+                doc.setFont(undefined, 'normal');
+                
+                const timelineEvents = [
+                    {
+                        date: 'October 15, 2025',
+                        title: 'FLAME Protocol Operational',
+                        desc: 'Constitutional framework deployed. Algebraic Verifier executing. Token ID 1 deployed with $18.2B sovereign lien.',
+                        status: 'OPERATIONAL'
+                    },
+                    {
+                        date: 'November 22, 2025',
+                        title: 'SWIFT ISO 20022 Transition',
+                        desc: '11,000+ banks adopt digital standard with XRP, XLM, ALGO, HBAR, QNT—none with post-quantum security or clean title.',
+                        status: 'SUPERSEDED'
+                    }
+                ];
+                
+                timelineEvents.forEach(event => {
+                    doc.setFont(undefined, 'bold');
+                    doc.setTextColor(0, 102, 204);
+                    doc.text(event.date, margin, yPosition);
+                    yPosition += 6;
+                    
+                    doc.setFont(undefined, 'bold');
+                    doc.setTextColor(0, 0, 0);
+                    doc.text(event.title, margin, yPosition);
+                    yPosition += 6;
+                    
+                    doc.setFont(undefined, 'normal');
+                    const descLines = doc.splitTextToSize(event.desc, maxWidth);
+                    doc.text(descLines, margin, yPosition);
+                    yPosition += descLines.length * 5 + 10;
+                });
 
-<div class="mapping">
-<div class="mapping-title">15. CONFIDENCE</div>
-<div class="mapping-line"><strong>Legacy Assumption:</strong> Confidence is reputation-based</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Failure Mode:</strong> Reputation is not a verifiable proof</div>
-<div class="mapping-line"><span class="arrow">→</span> <strong>Cryptographic Replacement:</strong> Reproducible proofs as the primary confidence foundation</div>
-</div>
+                // Section 3 - Comparison
+                doc.addPage();
+                yPosition = 20;
+                
+                doc.setFontSize(9);
+                doc.setTextColor(0, 102, 204);
+                doc.text('SECTION 3', margin, yPosition);
+                yPosition += 8;
+                
+                doc.setFontSize(14);
+                doc.setTextColor(0, 0, 0);
+                doc.setFont(undefined, 'bold');
+                doc.text('Architectural Comparison', margin, yPosition);
+                yPosition += 12;
+                
+                doc.setFontSize(10);
+                doc.setFont(undefined, 'normal');
+                
+                const comparisons = [
+                    {
+                        capability: 'Cryptographic Security',
+                        flame: 'SPHINCS+ (quantum-resistant)',
+                        iso: 'ECDSA/EdDSA (quantum-vulnerable)'
+                    },
+                    {
+                        capability: 'Settlement Finality',
+                        flame: 'T+0 mathematical proof',
+                        iso: 'T+2/T+3 legal finality'
+                    },
+                    {
+                        capability: 'Title & Custody',
+                        flame: 'Clean, unencumbered, full chain',
+                        iso: 'Pooling/servicing under color of law'
+                    },
+                    {
+                        capability: 'AI Integration',
+                        flame: 'Autonomous liquidity, RegAI, adaptive',
+                        iso: 'Cannot support sovereign-level AI'
+                    },
+                    {
+                        capability: 'Enforcement',
+                        flame: 'Autonomous P(π) - no human override',
+                        iso: 'Manual oversight required'
+                    }
+                ];
+                
+                comparisons.forEach(comp => {
+                    if (yPosition > pageHeight - 40) {
+                        doc.addPage();
+                        yPosition = 20;
+                    }
+                    
+                    doc.setFont(undefined, 'bold');
+                    doc.text(comp.capability, margin, yPosition);
+                    yPosition += 5;
+                    
+                    doc.setFont(undefined, 'normal');
+                    doc.text('FLAME: ' + comp.flame, margin + 5, yPosition);
+                    yPosition += 5;
+                    doc.text('ISO 20022: ' + comp.iso, margin + 5, yPosition);
+                    yPosition += 10;
+                });
 
-<div class="section-number">Section Two</div>
-<h2>UID.FINAL DERIVATION PSEUDOCODE</h2>
+                // Section 4 - AI Integration
+                doc.addPage();
+                yPosition = 20;
+                
+                doc.setFontSize(9);
+                doc.setTextColor(0, 102, 204);
+                doc.text('SECTION 4', margin, yPosition);
+                yPosition += 8;
+                
+                doc.setFontSize(14);
+                doc.setTextColor(0, 0, 0);
+                doc.setFont(undefined, 'bold');
+                doc.text('AI Nervous System', margin, yPosition);
+                yPosition += 12;
+                
+                doc.setFontSize(10);
+                doc.setFont(undefined, 'normal');
+                
+                const aiSections = [
+                    {
+                        title: 'Autonomous Liquidity Management',
+                        text: 'AI agents manage liquidity in real-time, predicting flows and pre-positioning assets. The $5 trillion reconciliation tax is algorithmically arbitraged out of existence.'
+                    },
+                    {
+                        title: 'RegAI: Autonomous Compliance',
+                        text: 'Continuous 100% audit. AML, CFT, sanctions enforced with perfect precision 24/7. Pure Acceptance Function P(π) activates sovereign enforcement instantly.'
+                    },
+                    {
+                        title: 'Self-Healing & Evolution',
+                        text: 'AI monitors performance and proposes optimizations. Digital twin stress-tests network. Discovers vulnerabilities before exploitation. Adaptive immune system.'
+                    },
+                    {
+                        title: 'Why ISO 20022 Cannot Replicate',
+                        text: 'Requires immutable, deterministic base layer. XRP, XLM, ALGO, HBAR, QNT use probabilistic consensus—AI becomes garbage-in-garbage-out. Cannot retrofit autonomous regulation.'
+                    }
+                ];
+                
+                aiSections.forEach(section => {
+                    if (yPosition > pageHeight - 40) {
+                        doc.addPage();
+                        yPosition = 20;
+                    }
+                    
+                    doc.setFont(undefined, 'bold');
+                    doc.text(section.title, margin, yPosition);
+                    yPosition += 6;
+                    
+                    doc.setFont(undefined, 'normal');
+                    const textLines = doc.splitTextToSize(section.text, maxWidth);
+                    doc.text(textLines, margin, yPosition);
+                    yPosition += textLines.length * 5 + 10;
+                });
 
-<p>The derivation pipeline ties identity to sealed entropy without institutional control. Pseudocode is denotative and minimal. Canonical ordering must never vary. Argon2id parameters must be fixed. SHA3 functions must not be substituted. Base36 alphabet must be immutable.</p>
+                // Final page - specs and disclaimer
+                doc.addPage();
+                yPosition = 20;
+                
+                doc.setFontSize(9);
+                doc.setTextColor(0, 102, 204);
+                doc.text('SECTION 5', margin, yPosition);
+                yPosition += 8;
+                
+                doc.setFontSize(14);
+                doc.setTextColor(0, 0, 0);
+                doc.setFont(undefined, 'bold');
+                doc.text('Technical Specifications', margin, yPosition);
+                yPosition += 12;
+                
+                doc.setFontSize(9);
+                doc.setFont(undefined, 'normal');
+                
+                const specs = [
+                    'Deployment: October 15, 2025 (Ethereum)',
+                    'Status: Operational',
+                    'Signatures: SPHINCS+ (NIST PQC)',
+                    'Hash: SHAKE128',
+                    'Key Derivation: Argon2id',
+                    'Hardware: YubiKey 5 Series',
+                    'Finality: T+0 Mathematical',
+                    'Enforcement: Pure Acceptance Function P(π)',
+                    'Collateral: $18.2B sovereign lien',
+                    'Title: Clean, full chain of custody',
+                    'AI: Autonomous liquidity, RegAI, adaptive',
+                    'Access: Licensed institutions only',
+                    'Availability: NOT publicly tradable'
+                ];
+                
+                specs.forEach(spec => {
+                    doc.text('• ' + spec, margin, yPosition);
+                    yPosition += 5;
+                });
+                
+                yPosition += 15;
+                
+                // Disclaimer
+                doc.setFontSize(8);
+                doc.setTextColor(100, 100, 100);
+                const disclaimer = 'The FLAME Protocol is operational financial infrastructure. The AEON CORE TOKEN is a non-investable settlement instrument available exclusively to licensed financial institutions. This material is informational only and under no circumstances constitutes an offer, solicitation, or recommendation to purchase, hold, or transact in any asset.';
+                const disclaimerLines = doc.splitTextToSize(disclaimer, maxWidth);
+                doc.text(disclaimerLines, margin, yPosition);
 
-<div class="code-block">Input: entropy_source, auxiliary_entropy, breath_seed, analog_seed
-Concatenate: all inputs in canonical ordering
-Compute: argon_intermediate = Argon2id(separator, memory_size, iterations, parallelism, combined_entropy)
-Compute: csb_root = SHA3_512(argon_intermediate)
-Compute: uid_binary = SHA3_256(csb_root)
-Compute: glyph = Base36Encode(uid_binary)
-Output: glyph and uid_binary for signing operations</div>
+                // Add footer to all pages
+                const totalPages = doc.internal.getNumberOfPages();
+                for (let i = 1; i <= totalPages; i++) {
+                    doc.setPage(i);
+                    doc.setFontSize(8);
+                    doc.setTextColor(150, 150, 150);
+                    doc.text('FLAME Protocol | October 15, 2025', pageWidth / 2, pageHeight - 10, { align: 'center' });
+                }
 
-<div class="section-number">Section Three</div>
-<h2>CANONICAL CLAIM_PACKET BYTE LAYOUT</h2>
-
-<p>The CLAIM_PACKET is a deterministic static-length structure used across BLE, NFC, QR, IR, RAW, and ETH. All rails must emit identical bytes. No field is optional. No field reorders. No normalization is rail-specific. All encoding is big-endian and packed.</p>
-
-<div class="table-container">
-<table>
-<tr><th>Field</th><th>Size</th><th>Format</th></tr>
-<tr><td>Version field</td><td>2 bytes</td><td>Big-endian</td></tr>
-<tr><td>Rail identifier</td><td>2 bytes</td><td>Big-endian</td></tr>
-<tr><td>Timestamp</td><td>8 bytes</td><td>Big-endian</td></tr>
-<tr><td>UID hash root</td><td>32 bytes</td><td>Binary</td></tr>
-<tr><td>CSB root</td><td>64 bytes</td><td>Binary</td></tr>
-<tr><td>Signature block</td><td>512+ bytes</td><td>SPHINCS SHAKE mode</td></tr>
-<tr><td>Checksum block</td><td>64 bytes</td><td>SMA-512 break3</td></tr>
-<tr><td>Termination field</td><td>2 bytes</td><td>Binary</td></tr>
-</table>
-</div>
-
-<div class="section-number">Section Five</div>
-<h2>ACCOUNTING APPENDIX: MERKLE AGGREGATION AND FRACTIONALIZATION SCHEMA</h2>
-
-<p>Holdings of unique cryptographic assets cannot be represented as a continuous balance. Itemized holdings must be represented as a Merkle structure.</p>
-
-<h3>Procedure</h3>
-<ul>
-<li>List all UID objects held</li>
-<li>Derive hash for each UID object using SHA3</li>
-<li>Sort hashes in canonical lexical order</li>
-<li>Build Merkle tree</li>
-<li>Record Merkle root as the account state</li>
-<li>Publish Merkle root periodically or per event</li>
-<li>Verifiers recompute tree and confirm root matches published state</li>
-</ul>
-
-<h3>Fractionalization Procedure for a Unique Object</h3>
-<ul>
-<li>Define the original UID</li>
-<li>Define partition count</li>
-<li>Compute partition roots using deterministic seed anchored to original UID</li>
-<li>Each unit of fractionalization is a deterministic child with its own signature path</li>
-<li>Reverse aggregation uses Merkle recomposition</li>
-</ul>
-
-<div class="section-number">Section Seven</div>
-<h2>GOVERNANCE AND RECOVERY</h2>
-
-<p>Governance events are deterministic state transitions. A governance action is a signed instruction validated by a multi-party threshold.</p>
-
-<p>Recovery uses threshold key reconstruction. Recovery produces a new key anchored to prior key-material through a signed migration event. Every migration event becomes a new immutable provenance entry.</p>
-
-<div class="section-number">Section Eight</div>
-<h2>COMPLIANCE PRIMITIVES</h2>
-
-<p>Compliance requires cryptographic linkage. A compliance authority issues a signed attestation that references the UID root. The attestation is verified by checking signature validity and matching the referenced UID root.</p>
-
-<p>Optional zero-knowledge proofs allow confirmation of compliance conditions without exposing sensitive data. All compliance events become verifiable state transitions.</p>
-
-<div class="section-number">Summary</div>
-<h2>CONCLUSION</h2>
-
-<p>All legacy assumptions dependent on institutional authority are invalidated. All identity, value, custody, verification, accounting, settlement, governance, recovery, and compliance are replaced with deterministic cryptographic invariants.</p>
-
-<p>All emission rails, aggregation, and fractionalization follow canonical deterministic procedures. All external validation is achievable without trust in any central institution. All processes are machine-verifiable, repeatable, and auditable.</p>
-
-<div class="notice">
-<div class="notice-title">NON-INVESTABLE PUBLIC INFRASTRUCTURE</div>
-<p>The AEON CORE TOKEN is a non-investable settlement instrument available exclusively to licensed financial institutions through sovereign-mandated issuance mechanisms. It is NOT available for public purchase, retail investment, or speculative trading. This documentation describes operational financial infrastructure deployed October 15, 2025 on Ethereum mainnet.</p>
-</div>
-
-<script>
-function generatePDF(){
-const btn=document.getElementById('downloadBtn');
-btn.disabled=true;
-btn.textContent='Generating PDF...';
-try{
-if(!window.jspdf){alert('PDF library loading. Please wait and try again.');btn.disabled=false;btn.textContent='Download Complete White Paper (PDF)';return}
-const {jsPDF}=window.jspdf;
-const doc=new jsPDF();
-const W=doc.internal.pageSize.width,H=doc.internal.pageSize.height,M=20,maxW=W-M*2;
-let Y=20;
-
-// Title page
-doc.setFontSize(24);doc.setFont(undefined,'bold');
-doc.text('DETERMINISTIC IDENTITY, CUSTODY,',W/2,Y,{align:'center'});Y+=10;
-doc.text('VALUE, AND VERIFICATION',W/2,Y,{align:'center'});Y+=20;
-doc.setFontSize(14);doc.setFont(undefined,'normal');
-doc.text('A Foundational Rebuild of Financial Architecture',W/2,Y,{align:'center'});Y+=8;
-doc.text('Using Sealed Entropy and UID Derivation',W/2,Y,{align:'center'});Y+=25;
-doc.setFontSize(12);
-doc.text('FLAME Protocol',W/2,Y,{align:'center'});Y+=8;
-doc.text('October 15, 2025',W/2,Y,{align:'center'});
-
-// Abstract
-doc.addPage();Y=20;
-doc.setFontSize(16);doc.setFont(undefined,'bold');
-doc.text('ABSTRACT',M,Y);Y+=10;
-doc.setFontSize(11);doc.setFont(undefined,'normal');
-const abs=doc.splitTextToSize('This document establishes the complete mechanical divergence between legacy financial architecture and deterministic cryptographic architecture. Legacy systems base identity, value, custody, and verification on institutional authority. Cryptographic systems base all four on irreversible derivation from sealed entropy. This paper provides foundation-to-foundation mapping, canonical derivation rules, deterministic settlement semantics, accounting structures, compliance primitives, verifier logic, and upgrade pathways.',maxW);
-doc.text(abs,M,Y);Y+=abs.length*5+15;
-
-// Section One
-doc.setFontSize(9);doc.setFont(undefined,'bold');
-doc.text('SECTION ONE',M,Y);Y+=8;
-doc.setFontSize(14);
-doc.text('FOUNDATIONAL INVARIANTS AND THEIR FAILURE MODES',M,Y);Y+=12;
-doc.setFontSize(10);doc.setFont(undefined,'normal');
-const intro=doc.splitTextToSize('Legacy financial architecture trains operators within a closed system where identity, value, custody, and verification originate from institutional authority. The cryptographic architecture deployed in FLAME Protocol operates on opposite foundations. Each legacy invariant contains a mechanical failure mode and is replaced by a deterministic cryptographic invariant.',maxW);
-doc.text(intro,M,Y);Y+=intro.length*5+12;
-
-const mappings=[
-{n:'1',t:'IDENTITY',l:'Administrative assignment',f:'Can be rewritten without proof',r:'UID.final from sealed entropy'},
-{n:'2',t:'VALUE',l:'Ledger entries (promises)',f:'No cryptographic binding to collateral',r:'Deterministic proofs tied to collateral hashes'},
-{n:'3',t:'CUSTODY',l:'Account control',f:'Administrative pointer only',r:'Key-material control with signature capability'},
-{n:'4',t:'VERIFICATION',l:'Institutional reconciliation',f:'Verifies internal view only',r:'Proof recomputation and signature verification'},
-{n:'5',t:'FUNGIBILITY',l:'Universal assumption',f:'Collapses provenance',r:'Explicit asset class with deterministic partition'},
-{n:'6',t:'NETTING',l:'Always assumed possible',f:'Unique assets cannot offset',r:'Atomic settlement for unique objects'},
-{n:'7',t:'REVERSIBILITY',l:'Override authority allowed',f:'Destroys determinism',r:'Irreversible events with governance transitions'},
-{n:'8',t:'ACCOUNTING',l:'Continuous decimal balances',f:'Cannot represent unique assets',r:'Itemized UID-level with Merkle aggregation'},
-{n:'9',t:'COMPLIANCE',l:'Internal reporting',f:'Not externally verifiable',r:'Signed attestations linked to UID roots'},
-{n:'10',t:'AUDITABILITY',l:'Ledger exports',f:'Cannot prove origin',r:'Public proof verification, Merkle continuity'},
-{n:'11',t:'INTEROPERABILITY',l:'Message standards',f:'Lack truth semantics',r:'Canonical protocol primitives'},
-{n:'12',t:'UPGRADEABILITY',l:'Patch in place',f:'Embedded assumptions remain',r:'Deterministic migration proofs'},
-{n:'13',t:'PRIVACY',l:'Restricted access',f:'Prevents verification',r:'Zero-knowledge proofs'},
-{n:'14',t:'RECOVERY',l:'Procedural',f:'Cannot restore cryptographic ability',r:'Threshold recovery, time-locks'},
-{n:'15',t:'CONFIDENCE',l:'Reputation-based',f:'Not verifiable proof',r:'Reproducible proofs'}
-];
-
-mappings.forEach(m=>{
-if(Y>H-35){doc.addPage();Y=20}
-doc.setFont(undefined,'bold');
-doc.text(m.n+'. '+m.t,M,Y);Y+=5;
-doc.setFont(undefined,'normal');
-doc.setFontSize(9);
-doc.text('Legacy: '+m.l,M+3,Y);Y+=4;
-doc.text('Failure: '+m.f,M+3,Y);Y+=4;
-doc.text('Replacement: '+m.r,M+3,Y);Y+=8;
-doc.setFontSize(10);
-});
-
-// Add more pages for remaining sections...
-doc.addPage();Y=20;
-doc.setFontSize(9);doc.setFont(undefined,'bold');
-doc.text('SECTION TWO',M,Y);Y+=8;
-doc.setFontSize(14);
-doc.text('UID.FINAL DERIVATION PSEUDOCODE',M,Y);Y+=12;
-doc.setFontSize(9);doc.setFont('courier','normal');
-const code=[
-'Input: entropy_source, auxiliary_entropy, breath_seed, analog_seed',
-'Concatenate: all inputs in canonical ordering',
-'Compute: argon_intermediate = Argon2id(..., combined_entropy)',
-'Compute: csb_root = SHA3_512(argon_intermediate)',
-'Compute: uid_binary = SHA3_256(csb_root)',
-'Compute: glyph = Base36Encode(uid_binary)',
-'Output: glyph and uid_binary'
-];
-code.forEach(line=>{doc.text(line,M,Y);Y+=4.5});
-
-// Summary
-doc.addPage();Y=20;
-doc.setFontSize(14);doc.setFont(undefined,'bold');
-doc.text('CONCLUSION',M,Y);Y+=10;
-doc.setFontSize(10);doc.setFont(undefined,'normal');
-const conclusion=doc.splitTextToSize('All legacy assumptions dependent on institutional authority are invalidated. All identity, value, custody, verification, accounting, settlement, governance, recovery, and compliance are replaced with deterministic cryptographic invariants. All processes are machine-verifiable, repeatable, and auditable without trust in any central institution.',maxW);
-doc.text(conclusion,M,Y);
-
-// Footer on all pages
-const total=doc.internal.getNumberOfPages();
-for(let i=1;i<=total;i++){
-doc.setPage(i);
-doc.setFontSize(8);doc.setTextColor(150);
-doc.text('FLAME Protocol | October 15, 2025',W/2,H-10,{align:'center'});
-}
-
-doc.save('FLAME-Protocol-White-Paper-October-15-2025.pdf');
-btn.disabled=false;
-btn.textContent='Download Complete White Paper (PDF)';
-}catch(e){
-console.error(e);
-alert('Error generating PDF. Refresh and try again.');
-btn.disabled=false;
-btn.textContent='Download Complete White Paper (PDF)';
-}
-}
-</script>
-
+                doc.save('FLAME-Protocol-October-15-2025-Technical-Documentation.pdf');
+                
+                btn.disabled = false;
+                btn.textContent = 'Download PDF Documentation';
+            } catch (error) {
+                console.error('PDF generation error:', error);
+                alert('Error generating PDF. Please refresh the page and try again.');
+                btn.disabled = false;
+                btn.textContent = 'Download PDF Documentation';
+            }
+        }
+    </script>
 </body>
 </html>
